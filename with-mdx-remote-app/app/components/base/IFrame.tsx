@@ -1,0 +1,57 @@
+import React, { useEffect } from "react";
+import styled from "@emotion/styled";
+import IframeResizer from "iframe-resizer-react";
+import { GREY_11 } from "../colors";
+
+const IFrameWrap = styled.div`
+  width: 100%;
+  padding: 30px;
+  background-color: ${GREY_11};
+`;
+
+declare global {
+  interface Window {
+      hbspt:any;
+  }
+}
+
+// let hbspt = window.hbspt;
+
+const HubSpotForm = ({ hubSpotFormId }: { hubSpotFormId: string }) => {
+  useEffect(() => {
+    if (
+      window &&
+      window.hbspt &&
+      window.hbspt.forms &&
+      window.hbspt.forms.create
+    ) {
+      window.hbspt.forms.create({
+        portalId: "7996980",
+        formId: hubSpotFormId,
+        target: `#hs-${hubSpotFormId}`,
+      });
+    }
+  }, []);
+
+  return <IFrameWrap id={`hs-${hubSpotFormId}`}></IFrameWrap>;
+};
+
+type Props = {
+  src?: string;
+  hubSpotFormId?: string;
+};
+
+const IFrame = ({ src, hubSpotFormId }: Props) => {
+  return hubSpotFormId ? (
+    <HubSpotForm hubSpotFormId={hubSpotFormId} />
+  ) : (
+    <IFrameWrap>
+      <IframeResizer
+        src={src}
+        style={{ width: "1px", minWidth: "100%", border: 0 }}
+      />
+    </IFrameWrap>
+  );
+};
+
+export default IFrame;
